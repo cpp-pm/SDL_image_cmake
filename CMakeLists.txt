@@ -1,14 +1,21 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.19.84.tar.gz"
+    SHA1 "9086d4b3c32784effdd6f83f45125b55cf95aae8"
+)
+
 PROJECT(SDL_image VERSION 2.0.1)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-find_package(SDL2 REQUIRED)
+hunter_add_package(SDL2)
+find_package(SDL2 CONFIG REQUIRED)
 
 set(ENABLE_DEFS "")
-set(LINK_LIBS ${SDL2_LIBRARY})
-set(INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
+set(LINK_LIBS SDL2::SDL2)
+set(INCLUDE_DIRS "")
 
 option(ENABLE_BMP "ENABLE_BMP" ON)
 option(ENABLE_GIF "ENABLE_GIF" ON)
@@ -34,9 +41,9 @@ endif()
 
 if(ENABLE_JPG)
     set(ENABLE_DEFS "${ENABLE_DEFS}" LOAD_JPG)
-    find_package(JPEG REQUIRED)
-    set(LINK_LIBS "${LINK_LIBS}" "${JPEG_LIBRARIES}")
-    set(INCLUDE_DIRS "${INCLUDE_DIRS}" "${JPEG_INCLUDE_DIRS}")
+    hunter_add_package(Jpeg)
+    find_package(JPEG CONFIG REQUIRED)
+    set(LINK_LIBS "${LINK_LIBS}" JPEG::jpeg)
 endif()
 
 if(ENABLE_LBM)
@@ -49,9 +56,10 @@ endif()
 
 if(ENABLE_PNG)
     set(ENABLE_DEFS "${ENABLE_DEFS}" LOAD_PNG)
+    hunter_add_package(PNG)
+    find_package(PNG CONFIG REQUIRED)
     find_package(PNG REQUIRED)
-    set(LINK_LIBS "${LINK_LIBS}" "${PNG_LIBRARIES}")
-    set(INCLUDE_DIRS "${INCLUDE_DIRS}" "${PNG_INCLUDE_DIRS}")
+    set(LINK_LIBS "${LINK_LIBS}" PNG::png)
 endif()
 
 if(ENABLE_PNM)
@@ -64,9 +72,9 @@ endif()
 
 if(ENABLE_TIF)
     set(ENABLE_DEFS "${ENABLE_DEFS}" LOAD_TIF)
-    find_package(TIFF REQUIRED)
-    set(LINK_LIBS "${LINK_LIBS}" "${TIFF_LIBRARIES}")
-    set(INCLUDE_DIRS "${INCLUDE_DIRS}" "${TIFF_INCLUDE_DIRS}")
+    hunter_add_package(TIFF)
+    find_package(TIFF CONFIG REQUIRED)
+    set(LINK_LIBS "${LINK_LIBS}" TIFF::libtiff)
 endif()
 
 if(ENABLE_WEBP)
