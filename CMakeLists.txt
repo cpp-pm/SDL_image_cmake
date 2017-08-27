@@ -124,3 +124,55 @@ target_link_libraries(SDL_image ${LINK_LIBS})
 include_directories(${INCLUDE_DIRS})
 
 target_compile_definitions(SDL_image PUBLIC "${ENABLE_DEFS}")
+
+#######################################
+#       cmake config-mode stuff       #
+#######################################
+
+set(config_install_dir "lib/cmake/${PROJECT_NAME}")
+set(include_install_dir "include")
+
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated/cmake")
+
+set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
+set(targets_export_name "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+include(CMakePackageConfigHelpers)
+
+# Note: PROJECT_VERSION is used as a VERSION
+write_basic_package_version_file(
+    "${version_config}" COMPATIBILITY SameMajorVersion
+)
+
+# Note: variable 'targets_export_name' used
+configure_file("Config.cmake.in" "${project_config}" @ONLY)
+
+
+install(
+    TARGETS SDL_image
+    EXPORT "${targets_export_name}"
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+    INCLUDES DESTINATION "${include_install_dir}" "${include_install_dir}/SDL2"
+)
+
+install(
+    FILES ${SRC_H_FILES}
+    DESTINATION "${include_install_dir}/SDL2"
+)
+
+
+install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}"
+)
+
+
+install(
+    EXPORT "${targets_export_name}"
+    NAMESPACE "${namespace}"
+    DESTINATION "${config_install_dir}"
+)
