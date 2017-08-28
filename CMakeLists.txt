@@ -123,7 +123,7 @@ add_library(SDL_image ${SRC_FILES})
 target_link_libraries(SDL_image ${LINK_LIBS})
 include_directories(${INCLUDE_DIRS})
 
-target_compile_definitions(SDL_image PUBLIC "${ENABLE_DEFS}")
+target_compile_definitions(SDL_image PUBLIC "${ENABLE_DEFS}" SDL_IMAGE_USE_COMMON_BACKEND)
 
 #######################################
 #       cmake config-mode stuff       #
